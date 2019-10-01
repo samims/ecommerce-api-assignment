@@ -7,6 +7,7 @@ schema_view = get_swagger_view(title="e-commerce api")
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('users.urls')),
-    path('docs/', schema_view),
+    path('api/', include('products.urls')),
+    path('api/docs/', schema_view),
 
 ]
