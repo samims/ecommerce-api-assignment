@@ -46,6 +46,7 @@ class Product(models.Model):
 
     name = models.CharField(max_length=254, blank=False, null=True)
     slug = models.CharField(max_length=254, blank=True, null=True, unique=True)
+    price = models.DecimalField(blank=False, decimal_places=2, max_digits=9, default=0.0)
     gender = models.CharField(max_length=20, choices=GENDER_CHOICES, db_index=True)
     out_of_stock = models.BooleanField(default=True)
     number_of_stock = models.IntegerField(default=0)
