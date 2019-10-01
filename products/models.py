@@ -32,7 +32,7 @@ class SubCategory(models.Model):
     """
 
     name = models.CharField(max_length=100, blank=False, null=True)
-    category = models.ForeignKey(Category, blank=True, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, blank=True, on_delete=models.CASCADE, related_name='sub_categories')
     slug = models.SlugField(max_length=254, db_index=True, unique=True, blank=True, null=True)
 
     def __str__(self):
@@ -49,7 +49,7 @@ class Product(models.Model):
     gender = models.CharField(max_length=20, choices=GENDER_CHOICES, db_index=True)
     out_of_stock = models.BooleanField(default=True)
     number_of_stock = models.IntegerField(default=0)
-    category = models.ManyToManyField(Category, blank=True)
+    categories = models.ManyToManyField(Category, blank=True)
 
 
 def category_pre_save_receiver(sender, instance, *args, **kwargs):
