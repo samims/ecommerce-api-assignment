@@ -1,11 +1,17 @@
 from django.urls import path
-from django.contrib.auth.views import LoginView, LogoutView
-from .views import SignupView
+from rest_framework_jwt.views import (
+    obtain_jwt_token,
+    refresh_jwt_token,
+    verify_jwt_token,
+)
 
-app_name = 'users'
+from .views import RegisterAPIView
+
+app_name = "users"
 
 urlpatterns = [
-    path('signup/', SignupView.as_view(template_name='users/signup.html')),
-    path("login/", LoginView.as_view(template_name='users/login.html')),
-    path("logout/", LogoutView.as_view()),
+    path("register/", RegisterAPIView.as_view(), name="register"),
+    path("api-token-auth/", obtain_jwt_token, name="obtain_token"),
+    path("api-token-refresh/", refresh_jwt_token, name="refresh_token"),
+    path("api-token-verify/", verify_jwt_token, name="verify_token"),
 ]

@@ -7,4 +7,5 @@ class CustomUser(AbstractUser):
     custom user model for scalability
     making email field required
     """
+
     email = models.EmailField(blank=False)
