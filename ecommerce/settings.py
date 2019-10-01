@@ -26,6 +26,7 @@ INSTALLED_APPS = [
 
     # third party
     'rest_framework',
+    'rest_framework_swagger',
 
     # local apps
     'users',
@@ -108,7 +109,6 @@ STATIC_URL = '/static/'
 # setting Auth user model to custom user
 AUTH_USER_MODEL = 'users.CustomUser'
 
-
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -118,4 +118,5 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'
 }
