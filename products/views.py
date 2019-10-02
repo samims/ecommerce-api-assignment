@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from .models import Category, SubCategory, Product
-from .permissions import IsAdminOrReadOnly
+from core.permissions import IsAdminOrReadOnly
 from .serializers import CategorySerializer, SubCategorySerializer, ProductSerializer
 
 
@@ -29,7 +29,7 @@ class ProductListCreateAPI(ListCreateAPIView):
     """
     serializer_class = ProductSerializer
     permission_classes = (IsAdminOrReadOnly,)
-    queryset = Product.objects.all().order_by('id')
+    queryset = Product.objects.all().prefetch_related().order_by('id')
 
 
 class ProductRetrieveUpdateDestroyAPI(RetrieveUpdateDestroyAPIView):
@@ -38,5 +38,7 @@ class ProductRetrieveUpdateDestroyAPI(RetrieveUpdateDestroyAPIView):
     """
     serializer_class = ProductSerializer
     permission_classes = (IsAdminOrReadOnly,)
-    queryset = Product.objects.all().order_by('id')
+    queryset = Product.objects.all().prefetch_related().order_by('id')
+    lookup_field = 'slug'
+
 

@@ -51,6 +51,10 @@ class Product(models.Model):
     out_of_stock = models.BooleanField(default=True)
     number_of_stock = models.IntegerField(default=0)
     categories = models.ManyToManyField(Category, blank=True)
+    sub_categories = models.ManyToManyField(SubCategory, blank=True, related_name='products')
+
+    def __str__(self):
+        return self.name
 
 
 def category_pre_save_receiver(sender, instance, *args, **kwargs):

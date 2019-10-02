@@ -19,4 +19,5 @@ urlpatterns = [
     path("products/", ProductListCreateAPI.as_view(), name='product_list'),
     path("products/<str:slug>/", ProductRetrieveUpdateDestroyAPI.as_view(), name='product_detail'),
 
+
 ]
