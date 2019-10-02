@@ -22,7 +22,7 @@ class Cart(models.Model):
     active = models.BooleanField(default=True)
 
     def __str__(self):
-        return str(self.id)
+        return str(self.pk)
 
 
 def m2m_changed_cart_receiver(instance, action, sender, *args, **kwargs):
