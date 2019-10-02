@@ -1,12 +1,12 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.generics import CreateAPIView, GenericAPIView, RetrieveUpdateAPIView
-from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView, RetrieveUpdateAPIView
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 from core.permissions import IsOwner
-
+from orders.models import Order
+from orders.serializers import OrderSerializer
 from products.models import Product
 from .models import Cart
 from .serializers import CartSerializer, CartUpdateSerializer
@@ -86,3 +86,25 @@ class RemoveProductFromCartAPI(GenericAPIView):
             qs.first().products.remove(prod_obj)
             return Response(status=status.HTTP_200_OK)
         return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class OrderCreateView(GenericAPIView):
+    """
+    View for Order Creation
+    """
+
+    serializer_class = OrderSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        qs = Order.objects.filter(user=self.request.user)
+        return qs
+
+    def post(self, request, *args, **kwargs):
+        return self.create_order(request, *args, **kwargs)
+
+    def create_order(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
