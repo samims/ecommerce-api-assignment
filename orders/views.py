@@ -41,6 +41,7 @@ class TopUsersAPIView(GenericAPIView):
     """
     View to find top user
     """
+
     serializer_class = UserSerializer
     permission_classes = (IsAdminUser,)
 
@@ -48,15 +49,19 @@ class TopUsersAPIView(GenericAPIView):
         top_order_users = (
             User.objects.filter(
                 order__timestamp__gte=timezone.now() - timedelta(days=30)
-            ).annotate(
-                order_count=Count("order")
-            ).order_by("-order_count")
+            )
+            .annotate(order_count=Count("order"))
+            .order_by("-order_count")
         )
         top_order_users = self.get_serializer(top_order_users, many=True).data
-        data = {'top_order_users': top_order_users}
-        top_value_users = User.objects.filter(order__timestamp__gte=timezone.now() - timedelta(days=30)).annotate(
-            value_sum=Sum('order__total')
-        ).order_by('-value_sum')
+        data = {"top_order_users": top_order_users}
+        top_value_users = (
+            User.objects.filter(
+                order__timestamp__gte=timezone.now() - timedelta(days=30)
+            )
+            .annotate(value_sum=Sum("order__total"))
+            .order_by("-value_sum")
+        )
         top_value_users = self.get_serializer(top_value_users, many=True).data
-        data['top_value_users'] = top_value_users
+        data["top_value_users"] = top_value_users
         return Response(data, status=200)

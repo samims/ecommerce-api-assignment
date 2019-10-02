@@ -6,6 +6,7 @@ from .views import (
     SubCategoryViewSet,
     ProductListCreateAPI,
     ProductRetrieveUpdateDestroyAPI,
+    CategorySumAPI
 )
 
 app_name = 'products'
@@ -19,5 +20,6 @@ urlpatterns = [
     # path("categories",)
     path("products/", ProductListCreateAPI.as_view(), name='product_list'),
     path("products/<str:slug>/", ProductRetrieveUpdateDestroyAPI.as_view(), name='product_detail'),
+    path("sum/", CategorySumAPI.as_view(), name='sum')
     # path('categories/search/', )
 ]

@@ -19,9 +19,8 @@ class Category(models.Model):
     slug = models.SlugField(max_length=254, db_index=True, blank=True, null=True)
 
     class Meta:
-        ordering = ("name",)
+        ordering = ("-id",)
         verbose_name_plural = "categories"
-        ordering = ['-id']
 
     def __str__(self):
         return self.name
@@ -33,7 +32,7 @@ class SubCategory(models.Model):
     """
 
     name = models.CharField(max_length=100, blank=False, null=True)
-    category = models.ForeignKey(Category, blank=True, on_delete=models.CASCADE, related_name='sub_categories')
+    category = models.ForeignKey(Category, blank=True, on_delete=models.CASCADE, related_name='sub_categories', null=True)
     slug = models.SlugField(max_length=254, db_index=True, unique=True, blank=True, null=True)
 
     def __str__(self):
@@ -54,7 +53,7 @@ class Product(models.Model):
     gender = models.CharField(max_length=20, choices=GENDER_CHOICES, db_index=True)
     out_of_stock = models.BooleanField(default=True)
     number_of_stock = models.IntegerField(default=0)
-    categories = models.ManyToManyField(Category, blank=True)
+    categories = models.ManyToManyField(Category, blank=True, related_name='products')
     sub_categories = models.ManyToManyField(SubCategory, blank=True, related_name='products')
 
     class Meta:

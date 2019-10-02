@@ -1,5 +1,8 @@
 from rest_framework import viewsets
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.permissions import IsAdminUser
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from core.permissions import IsAdminOrReadOnly
 from .models import Category, SubCategory, Product
@@ -52,3 +55,22 @@ class ProductRetrieveUpdateDestroyAPI(RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAdminOrReadOnly,)
     queryset = Product.objects.all().prefetch_related()
     lookup_field = 'slug'
+
+
+class CategorySumAPI(APIView):
+    """
+    APIView to return sum of product
+    price
+    """
+    permission_classes = (IsAdminUser,)
+
+    def get(self, request, *args, **kwargs):
+        categories = request.GET.get('categories', '').split(',')
+        total = 0
+        if categories:
+            products = Product.objects.filter(categories__id__in=categories,
+                                              out_of_stock=False)  # .aggregate(total=Sum("price"))
+            # should write query instead of inefficient loop
+            for product in products:
+                total += product.price * product.number_of_stock
+        return Response(data={'total': total}, status=200)
