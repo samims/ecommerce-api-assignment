@@ -23,6 +23,6 @@ class RegisterAPIView(APIView):
         if serializer.is_valid():
             serializer.save()
             data = serializer.data
-            data.pop("password")  # pass should not be in response
+            # data.pop("password")  # pass should not be in response
             return Response(data=data, status=status.HTTP_201_CREATED)
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -8,6 +8,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('users.urls')),
     path('api/', include('products.urls')),
+    path('api/cart/', include('cart.urls')),
     path('api/docs/', schema_view),
+
 
 ]
