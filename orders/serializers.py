@@ -26,6 +26,9 @@ class OrderSerializer(serializers.ModelSerializer):
             cart_obj = qs.first()
             if cart_obj.total:
                 validated_data['cart'] = cart_obj
-                return super(OrderSerializer, self).create(validated_data)
+                cart_obj.active = False
+                cart_obj.save()
+                data = Order.objects.create(**validated_data)
+                return data
             raise serializers.ValidationError("add item to cart")
         raise serializers.ValidationError("no cart is available")

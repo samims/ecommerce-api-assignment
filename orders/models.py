@@ -1,7 +1,7 @@
 from django.db import models
 from cart.models import Cart
 from django.conf import settings
-from django.db.models.signals import pre_save
+from django.db.models.signals import post_save
 
 
 class Order(models.Model):
@@ -11,14 +11,14 @@ class Order(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     total = models.DecimalField(default=0.00, max_digits=10, decimal_places=2)
     # redundant because asked in requirement
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ['-timestamp', ]
 
 
-def order_pre_save_receiver(sender, instance, *args, **kwargs):
+def order_post_save_receiver(sender, instance, *args, **kwargs):
     """
     pre save receiver for Order model
     """
@@ -27,4 +27,4 @@ def order_pre_save_receiver(sender, instance, *args, **kwargs):
         instance.save()
 
 
-pre_save.connect(order_pre_save_receiver, sender=Order)
+post_save.connect(order_post_save_receiver, sender=Order)
