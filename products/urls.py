@@ -16,8 +16,8 @@ router.register("subcategories", SubCategoryViewSet, base_name='subcategory')
 
 urlpatterns = [
     path("", include(router.urls)),
+    # path("categories",)
     path("products/", ProductListCreateAPI.as_view(), name='product_list'),
     path("products/<str:slug>/", ProductRetrieveUpdateDestroyAPI.as_view(), name='product_detail'),
-
-
+    # path('categories/search/', )
 ]

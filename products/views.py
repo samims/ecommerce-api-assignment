@@ -1,7 +1,8 @@
 from rest_framework import viewsets
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from .models import Category, SubCategory, Product
+
 from core.permissions import IsAdminOrReadOnly
+from .models import Category, SubCategory, Product
 from .serializers import CategorySerializer, SubCategorySerializer, ProductSerializer
 
 
@@ -29,7 +30,18 @@ class ProductListCreateAPI(ListCreateAPIView):
     """
     serializer_class = ProductSerializer
     permission_classes = (IsAdminOrReadOnly,)
-    queryset = Product.objects.all().prefetch_related().order_by('id')
+
+    def get_queryset(self):
+        """
+        overriding to activate lookup
+        """
+        categories = self.request.GET.get('categories')
+        if categories:
+            categories = categories.split(',')
+            return Product.objects.filter(categories__id__in=categories, out_of_stock=False)
+
+        queryset = Product.objects.all().prefetch_related()
+        return queryset
 
 
 class ProductRetrieveUpdateDestroyAPI(RetrieveUpdateDestroyAPIView):
@@ -38,7 +50,5 @@ class ProductRetrieveUpdateDestroyAPI(RetrieveUpdateDestroyAPIView):
     """
     serializer_class = ProductSerializer
     permission_classes = (IsAdminOrReadOnly,)
-    queryset = Product.objects.all().prefetch_related().order_by('id')
+    queryset = Product.objects.all().prefetch_related()
     lookup_field = 'slug'
-
-

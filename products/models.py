@@ -21,6 +21,7 @@ class Category(models.Model):
     class Meta:
         ordering = ("name",)
         verbose_name_plural = "categories"
+        ordering = ['-id']
 
     def __str__(self):
         return self.name
@@ -38,6 +39,9 @@ class SubCategory(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ['-id']
+
 
 class Product(models.Model):
     """
@@ -52,6 +56,9 @@ class Product(models.Model):
     number_of_stock = models.IntegerField(default=0)
     categories = models.ManyToManyField(Category, blank=True)
     sub_categories = models.ManyToManyField(SubCategory, blank=True, related_name='products')
+
+    class Meta:
+        ordering = ['-id']
 
     def __str__(self):
         return self.name

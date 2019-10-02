@@ -10,6 +10,10 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = '__all__'
+        extra_kwargs = {
+            'name': {'required': True},
+            'slug': {'read_only': True}
+        }
 
 
 class SubCategorySerializer(serializers.ModelSerializer):
@@ -30,10 +34,15 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = '__all__'
+        extra_kwargs = {
+            'slug': {'read_only': True},
+            'out_of_stock': {'read_only': True}
+        }
 
     def to_representation(self, instance):
         """
-        overriding to show category detail in product
+        overriding to show category & sub category
+        detail in product
         """
         representation = super(ProductSerializer, self).to_representation(instance)
         categories = instance.categories.all()

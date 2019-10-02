@@ -5,18 +5,19 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from core.permissions import IsOwner
-from orders.models import Order
-from orders.serializers import OrderSerializer
 from products.models import Product
 from .models import Cart
 from .serializers import CartSerializer, CartUpdateSerializer
 
 
 class CartAPIView(GenericAPIView):
-    """Cart Create API """
+    """
+    Cart Create API, creates cart if there is 
+    no active cart available for the user
+    """
     serializer_class = CartSerializer
     permission_classes = (IsAuthenticated,)
-
+    
     def get_queryset(self):
         queryset = Cart.objects.filter(user=self.request.user, active=True)
         return queryset
@@ -36,24 +37,6 @@ class CartAPIView(GenericAPIView):
 
     def perform_create(self, serializer):
         serializer.save()
-
-    def delete(self, request, *args, **kwargs):
-        """
-        removes product from cart
-        """
-        return self.destroy(request, *args, **kwargs)
-
-    def destroy(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        data = serializer.data['products']
-        obj = get_object_or_404(Product)
-        print(data)
-
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-    def perform_destroy(self, instance):
-        instance.delete()
 
 
 class CartUpdateAPIView(RetrieveUpdateAPIView):
@@ -86,25 +69,3 @@ class RemoveProductFromCartAPI(GenericAPIView):
             qs.first().products.remove(prod_obj)
             return Response(status=status.HTTP_200_OK)
         return Response(status=status.HTTP_404_NOT_FOUND)
-
-
-class OrderCreateView(GenericAPIView):
-    """
-    View for Order Creation
-    """
-
-    serializer_class = OrderSerializer
-    permission_classes = (IsAuthenticated,)
-
-    def get_queryset(self):
-        qs = Order.objects.filter(user=self.request.user)
-        return qs
-
-    def post(self, request, *args, **kwargs):
-        return self.create_order(request, *args, **kwargs)
-
-    def create_order(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
